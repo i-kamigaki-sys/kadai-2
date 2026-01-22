@@ -26,7 +26,7 @@ header h1 {
 
 .choices {
     list-style: none;
-    padding: 0;
+    padding: 20px 0;
     margin: 20px 0;
     display: flex;
     justify-content: space-around;

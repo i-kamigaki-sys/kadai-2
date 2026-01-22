@@ -18,16 +18,16 @@
 
 <main>
     <div class="card">
+        <div class="result-area">
+            <div>
+                コンピュータの手 <span id="pc-hand" style="display: inline-block; width: 6em; height: 1.5em; line-height: 1.5em; vertical-align: middle; text-align: center;">？　？？</span>
+            </div>
         <ul class="choices">
             <li id="gu" class="choice-btn">✊ グー</li>
             <li id="choki" class="choice-btn">✌️ チョキ</li>
             <li id="pa" class="choice-btn">✋ パー</li>
         </ul>
-        <div class="result-area">
-            <div>
-                コンピュータの手：「<span id="pc-hand">まだ選んでいません</span>」
-            </div>
-            <div id="result" class="result">手を選んでください</div>
+            <div id="result" class="result">あなたの手を選んでください</div>
             <div class="score-area">
             <p><span id="score-ratio">0勝0敗 / 0戦</span></p>
             </div>
@@ -41,7 +41,7 @@
 
 $(function() {
     // スロット用の設定
-    const hands = ["✊ グー", "✌️ チョキ", "✋ パー"];
+    const hands = ["✊　グー", "✌️　チョキ", "✋　パー"];
     let slotId; // スロットを管理するためのID
     let count = 0; // スロットの回転用カウント
 
