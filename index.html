@@ -36,10 +36,30 @@
 
 // じゃんけんゲームの JavaScript を記述してください！
 
-    // じゃんけんゲーム部分
-    $(".choice-btn").on("click", function(){   
+$(function() {
+    const hands = ["✊ グー", "✌️ チョキ", "✋ パー"];
+    let slotId; // スロット（setInterval）を管理するための変数
+    let count = 0;
 
-        // 1. 自分の手を数字に変換 (idを使って判定)
+    // --- ① スロットを動かす関数 ---
+    function startSlot() {
+        slotId = setInterval(function() {
+            // 0, 1, 2 を順番に繰り返して表示する
+            $("#pc-hand").html(hands[count % 3]);
+            count++;
+        }, 60); // 60ミリ秒（約0.06秒）ごとに切り替え
+    }
+
+    // ページが開いた瞬間にスロットを開始
+    startSlot();
+
+    // --- ② ボタンをクリックした時の処理 ---
+    $(".choice-btn").on("click", function() {
+        // 1. スロットを止める
+        clearInterval(slotId);
+
+        // じゃんけんゲーム部分
+        // 2. 自分の手を数字に変換
         const id = $(this).attr("id");
         let userHand;
         if (id === "gu") userHand = 0;
@@ -48,9 +68,6 @@
 
         // 2. コンピュータの手をランダムに決定
         const pcHand = Math.floor(Math.random() * 3);
-        
-        // 3. 画面に表示
-        const hands = ["✊ グー", "✌️ チョキ", "✋ パー"];
         $("#pc-hand").html(hands[pcHand]);
 
         // 4. 勝敗判定 (mod3 ロジック)
@@ -60,7 +77,7 @@
         // 5. 結果を表示
         $("#result").html(resultMsg[resultNum]);
 
-        // add. 勝った時に色を変える
+        // 6. 勝敗に応じた文字色変更
         if (resultNum === 1) {
             $("#result").css("color", "blue");
         } else if (resultNum === 2) {
@@ -69,8 +86,19 @@
             $("#result").css("color", "black");
         }
 
+        // --- ③ 次のゲームへの準備 ---
+        // 連打できないように一時的にボタンを無効化
+        $(".choice-btn").css("pointer-events", "none");
+
+        // 2.0秒後にスロットを再開する
+        setTimeout(function() {
+            $("#result").html("手を選んでください");
+            $("#result").css("color", "black");
+            $(".choice-btn").css("pointer-events", "auto"); // ボタンを有効に戻す
+            startSlot(); // スロット再開
+        }, 2000);
     });
-;
+});
 
 // じゃんけんアプリ概要 -----------------------------------------------
 // 
