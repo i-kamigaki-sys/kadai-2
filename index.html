@@ -28,6 +28,9 @@
                 コンピュータの手：「<span id="pc-hand">まだ選んでいません</span>」
             </div>
             <div id="result" class="result">手を選んでください</div>
+            <div class="score-area">
+            <p><span id="score-ratio">0勝0敗 / 0戦</span></p>
+            </div>
         </div>
     </div>
 </main>
@@ -37,29 +40,33 @@
 // じゃんけんゲームの JavaScript を記述してください！
 
 $(function() {
+    // スロット用の設定
     const hands = ["✊ グー", "✌️ チョキ", "✋ パー"];
-    let slotId; // スロット（setInterval）を管理するための変数
-    let count = 0;
+    let slotId; // スロットを管理するためのID
+    let count = 0; // スロットの回転用カウント
 
-    // --- ① スロットを動かす関数 ---
+    // カウンター用の変数
+    let winCount = 0;
+    let lossCount = 0;
+    let drawCount = 0;
+
+    // スロットを開始する関数
     function startSlot() {
         slotId = setInterval(function() {
-            // 0, 1, 2 を順番に繰り返して表示する
             $("#pc-hand").html(hands[count % 3]);
             count++;
-        }, 60); // 60ミリ秒（約0.06秒）ごとに切り替え
+        }, 60);
     }
 
-    // ページが開いた瞬間にスロットを開始
-    startSlot();
+    // ページ読み込み時にスロットを開始
+startSlot();
 
-    // --- ② ボタンをクリックした時の処理 ---
-    $(".choice-btn").on("click", function() {
-        // 1. スロットを止める
+    // じゃんけんゲーム部分
+$(".choice-btn").on("click", function(){   
+        // スロットを即座に停止
         clearInterval(slotId);
 
-        // じゃんけんゲーム部分
-        // 2. 自分の手を数字に変換
+        // 1. 自分の手を数字に変換 (idを使って判定)
         const id = $(this).attr("id");
         let userHand;
         if (id === "gu") userHand = 0;
@@ -68,6 +75,9 @@ $(function() {
 
         // 2. コンピュータの手をランダムに決定
         const pcHand = Math.floor(Math.random() * 3);
+        
+        // 3. 画面に表示
+        // const hands = ["✊ グー", "✌️ チョキ", "✋ パー"]; // 上部で定義済みのためコメントアウト可
         $("#pc-hand").html(hands[pcHand]);
 
         // 4. 勝敗判定 (mod3 ロジック)
@@ -77,24 +87,29 @@ $(function() {
         // 5. 結果を表示
         $("#result").html(resultMsg[resultNum]);
 
-        // 6. 勝敗に応じた文字色変更
+        // 6. 勝った時に色を変える
         if (resultNum === 1) {
             $("#result").css("color", "blue");
+            lossCount++; // 負け数をカウント
         } else if (resultNum === 2) {
             $("#result").css("color", "red");
+            winCount++; // 勝ち数をカウント
         } else {
             $("#result").css("color", "black");
+            drawCount++; // あいこ数をカウント
         }
 
-        // --- ③ 次のゲームへの準備 ---
-        // 連打できないように一時的にボタンを無効化
-        $(".choice-btn").css("pointer-events", "none");
+        // --- 勝敗カウンターの表示更新 ---
+        const totalMatches = winCount + lossCount; // 合計戦数を計算
+        $("#score-ratio").html(winCount + "勝" + lossCount + "敗 / " + totalMatches + "戦");
 
-        // 2.0秒後にスロットを再開する
+        // 次のゲームのための処理
+        $(".choice-btn").css("pointer-events", "none"); // 連打防止
+
         setTimeout(function() {
             $("#result").html("手を選んでください");
             $("#result").css("color", "black");
-            $(".choice-btn").css("pointer-events", "auto"); // ボタンを有効に戻す
+            $(".choice-btn").css("pointer-events", "auto"); // ボタン有効化
             startSlot(); // スロット再開
         }, 2000);
     });
