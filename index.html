@@ -1,0 +1,123 @@
+<!doctype html>
+<html lang="ja">
+    <head>
+        <meta charset="UTF-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+        <title>じゃんけん</title>
+
+        <!-- CSS読み込み -->
+        <link rel="stylesheet" href="css/style.css" />
+
+        <!-- jQuery読み込み -->
+        <script src="js/jquery-3.7.1.min.js"></script>
+    </head>
+<body>
+<header>
+    <h1>じゃんけん</h1>
+</header>
+
+<main>
+    <div class="card">
+        <ul class="choices">
+            <li id="gu" class="choice-btn">✊ グー</li>
+            <li id="choki" class="choice-btn">✌️ チョキ</li>
+            <li id="pa" class="choice-btn">✋ パー</li>
+        </ul>
+        <div class="result-area">
+            <div>
+                コンピュータの手：「<span id="pc-hand">まだ選んでいません</span>」
+            </div>
+            <div id="result" class="result">手を選んでください</div>
+        </div>
+    </div>
+</main>
+
+<script>
+
+// じゃんけんゲームの JavaScript を記述してください！
+
+    // じゃんけんゲーム部分
+    $(".choice-btn").on("click", function(){   
+
+        // 1. 自分の手を数字に変換 (idを使って判定)
+        const id = $(this).attr("id");
+        let userHand;
+        if (id === "gu") userHand = 0;
+        else if (id === "choki") userHand = 1;
+        else userHand = 2;
+
+        // 2. コンピュータの手をランダムに決定
+        const pcHand = Math.floor(Math.random() * 3);
+        
+        // 3. 画面に表示
+        const hands = ["✊ グー", "✌️ チョキ", "✋ パー"];
+        $("#pc-hand").html(hands[pcHand]);
+
+        // 4. 勝敗判定 (mod3 ロジック)
+        const resultNum = (userHand - pcHand + 3) % 3;
+        const resultMsg = ["アイコ", "負け", "勝ち"];
+
+        // 5. 結果を表示
+        $("#result").html(resultMsg[resultNum]);
+
+        // add. 勝った時に色を変える
+        if (resultNum === 1) {
+            $("#result").css("color", "blue");
+        } else if (resultNum === 2) {
+            $("#result").css("color", "red");
+        } else {
+            $("#result").css("color", "black");
+        }
+
+    });
+;
+
+// じゃんけんアプリ概要 -----------------------------------------------
+// 
+// 【基本機能】
+// - プレイヤーがグー・チョキ・パーのボタンをクリックできる
+// - コンピュータがランダムに手を選ぶ
+// - 勝敗を判定して結果を表示する
+// - 結果に応じて色分け表示する
+// 
+// 【画面構成】ID
+// - #gu ボタン: グーを選択
+// - #choki ボタン: チョキを選択  
+// - #pa ボタン: パーを選択
+// - #pc-hand: コンピュータの手を表示
+// - #result: 勝敗結果を表示
+
+// <メモ＞
+// 
+// 開始
+// プレイヤー(P)がグー・チョキ・パーの手を選択する（ボタンをクリックする）
+// コンピュータ(C)がー・チョキ・パーの手を選択する
+// 相手の手と比較し、それぞれ勝敗がつけられる *設定
+//  双方の手が一致した場合、「アイコ」となる
+//  プレイヤーの手が勝ちの場合、「勝ち」と表示する
+//  プレイヤーの手が負けの場合、「負け」と表示する
+// 終了
+
+// *設定: グー=0, チョキ=1, パー=2 
+
+// <差>
+//.     グー チョ パー
+// グー   0  -1  -2
+// チョ   1   0  -1 
+// パー   2   1   0
+// 
+// <差(mod3)> *+3して正負調整
+//.     グー チョ パー
+// グー   0   2   1
+// チョ   1   0   2 
+// パー   2   1   0
+// 
+// → アイコ=0, 負け=1, 勝ち=2 として定義
+
+// ---------------------------------------------------------------
+
+</script>
+</body>
+</html>
+
+
